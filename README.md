@@ -1,12 +1,32 @@
-# 🤖 MCP Haloscan Server
+# 🚀 MCP Haloscan Server avec Chunking Intelligent
 
-Serveur MCP (Model Context Protocol) moderne et optimisé avec FastAPI pour exposer l'API Haloscan SEO à Claude Desktop.
+Serveur MCP (Model Context Protocol) moderne avec **Chunking Intelligent** pour analyses SEO complètes sans limite de tokens. Interface web professionnelle + intégration Claude Desktop.
+
+## ✨ **NOUVEAUTÉS MAJEURES**
+
+### 🧠 **Chunking Intelligent**
+- **Analyses SEO illimitées** : Contourne les limites de tokens OpenAI
+- **Traitement séquentiel** : Découpe automatique des données en chunks
+- **Synthèse finale** : Combine tous les résultats en une analyse complète
+- **Optimisation tokens** : Prompts optimisés pour maximiser les données utiles
+
+### 🎯 **Interface Plein Écran Professionnelle**
+- **Design moderne** : Interface chat occupant 100% de l'écran
+- **Progression en temps réel** : Barre de progression + timer + étapes détaillées
+- **Textarea extensible** : Auto-resize pour prompts longs (Ctrl+Entrée)
+- **Exemples pré-configurés** : Prompts chunked prêts à l'emploi
+
+### 📊 **Récupération de Données Étendue**
+- **Positions 1-50** : Analyse complète pages 1-5 (au lieu de 1-20)
+- **Limite augmentée** : 200 résultats par appel API (au lieu de 50)
+- **3 tranches d'analyse** : Pages 1, 2, et 3+ pour couverture maximale
 
 ## 📋 Table des Matières
 
 - [🚀 Installation Rapide](#-installation-rapide)
 - [⚙️ Configuration](#️-configuration)
 - [🎯 Utilisation](#-utilisation)
+- [🧠 Chunking Intelligent](#-chunking-intelligent)
 - [🛠️ Outils Disponibles](#️-outils-disponibles)
 - [📁 Structure du Projet](#-structure-du-projet)
 - [🔒 Sécurité](#-sécurité)
@@ -114,15 +134,16 @@ Ou ajouter manuellement dans `claude_desktop_config.json` :
 
 ## 🎯 Utilisation
 
-### Mode Web (Test et Debug)
+### 🧠 Interface Chunked (Recommandée)
 ```bash
 # Lancer l'interface web
 python main.py
 
-# Accès aux interfaces :
-# 🌐 Interface: http://localhost:8000
-# 📚 Documentation API: http://localhost:8000/docs
-# ❤️ Santé du serveur: http://localhost:8000/health
+# Accès à l'interface chunked :
+# 🧠 Chat Chunked: http://localhost:8080/chat-chunked
+# 🌐 Interface normale: http://localhost:8080/
+# 📚 Documentation API: http://localhost:8080/docs
+# ❤️ Santé du serveur: http://localhost:8080/health
 ```
 
 ### Mode MCP (Claude Desktop)
@@ -133,6 +154,79 @@ python main.py mcp
 # Le serveur se connecte automatiquement à Claude Desktop
 # Utilisez les outils directement dans vos conversations Claude
 ```
+
+## 🧠 Chunking Intelligent
+
+### 🎯 Qu'est-ce que le Chunking Intelligent ?
+
+Le **Chunking Intelligent** résout le problème des **limites de tokens OpenAI** pour les analyses SEO complètes :
+
+- **Problème** : OpenAI limite à ~4000 tokens par réponse
+- **Conséquence** : Analyses tronquées, données incomplètes
+- **Solution** : Découpage intelligent + synthèse finale
+
+### 📊 Comment ça fonctionne ?
+
+```
+1. 📊 Analyse du domaine (3s)
+2. 🏢 Identification des concurrents (4s)
+3. 🔍 Analyse mots-clés page 2 (11-20) (8s)
+4. 📈 Analyse mots-clés page 1 (1-10) (6s)
+5. 📊 Analyse mots-clés page 3+ (21-50) (10s)
+6. 🧠 Synthèse finale (max 8000 tokens) (15s)
+```
+
+**Total : ~46 secondes pour une analyse complète**
+
+### 🚀 Avantages du Chunking
+
+- **✨ Analyses illimitées** : Plus de limite de tokens
+- **📊 Données maximisées** : 200 résultats par appel (vs 50)
+- **🎯 Couverture étendue** : Positions 1-50 (vs 1-20)
+- **📈 Progression visuelle** : Timer + barre + étapes
+- **📝 Format optimisé** : Tableaux Markdown sans blabla
+
+### 📋 Exemples de Prompts Chunked
+
+#### 🧠 Analyse des Gaps SEO
+```
+ANALYSE SEO CHUNKED: https://ads-up.fr/
+MISSION: Identifier les mots-clés où ads-up.fr NE SE POSITIONNE PAS 
+mais où la plupart de ses concurrents sont bien positionnés (pages 1-3).
+
+FORMAT OBLIGATOIRE - RÉPONSE DIRECTE SANS BLABLA:
+| keyword | volume | difficulty | competition | cpc | trend | thematic_cluster | sous_thematique | intention_type |
+
+INSTRUCTIONS CRITIQUES:
+- FOCUS: mots-clés où ads-up.fr est ABSENT (pas de position)
+- CONDITION: concurrents positionnés pages 1-3 sur ces mots-clés
+- INCLURE: TOUS les gaps SEO trouvés (pas de limite)
+- PRIORITÉ: mots-clés à fort potentiel commercial
+```
+
+#### 📊 Analyse Concurrentielle Complète
+```
+ANALYSE SEO CHUNKED: https://lemonde.fr/
+MISSION: Rapport détaillé avec analyse exhaustive des mots-clés et concurrents.
+
+FORMAT: Tableau avec TOUS les mots-clés trouvés
+FOCUS: Positions 11-50 où les concurrents sont mieux classés
+```
+
+### 📈 Résultats Attendus
+
+Avec le chunking, vous obtenez :
+
+```markdown
+| keyword | volume | difficulty | competition | cpc | trend | thematic_cluster | sous_thematique | intention_type |
+|---------|--------|------------|-------------|-----|-------|------------------|-----------------|-------------------|
+| agence sea | 1200 | 0.65 | 0.78 | 3.45 | Croissant | Marketing Digital | SEA | Commerciale |
+| consultant adwords | 890 | 0.58 | 0.72 | 4.20 | Stable | Marketing Digital | Google Ads | Commerciale |
+| formation google ads | 3200 | 0.45 | 0.62 | 2.90 | Croissant | Formation | SEA | Informationnelle |
+... (TOUS les autres mots-clés - potentiellement 100-200+)
+```
+
+**Au lieu de seulement 20 mots-clés tronqués ! 🎉**
 
 ### Exemples d'Utilisation dans Claude
 
