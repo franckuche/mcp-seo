@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-haloscan-server"
+version = "1.0.0"
+description = "Serveur MCP moderne pour l'API Haloscan SEO avec FastAPI"
+authors = [
+    {name = "Votre Nom", email = "votre.email@example.com"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["mcp", "seo", "haloscan", "claude", "ai", "fastapi"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0", 
+    "httpx>=0.26.0",
+    "pydantic>=2.6.0",
+    "python-multipart>=0.0.9",
+    "jinja2>=3.1.3",
+    "python-dotenv>=1.0.0",
+    "fastmcp>=2.11.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/votre-user/mcp-haloscan-server"
+Documentation = "https://github.com/votre-user/mcp-haloscan-server#readme"
+Repository = "https://github.com/votre-user/mcp-haloscan-server.git"
+Issues = "https://github.com/votre-user/mcp-haloscan-server/issues"
+
+[project.scripts]
+mcp-haloscan = "main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

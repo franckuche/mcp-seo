@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Haloscan SEO Tools - Interface MCP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div x-data="haloscanApp()" class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                🚀 <span class="text-blue-600">Haloscan</span> SEO Tools
+            </h1>
+            <p class="text-gray-600">Interface graphique pour votre serveur MCP</p>
+            
+            <!-- Crédits utilisateur -->
+            <div class="mt-4 inline-block bg-white rounded-lg shadow-md px-4 py-2">
+                <span class="text-sm text-gray-600">Crédits disponibles:</span>
+                <span x-text="userCredits" class="font-bold text-green-600 ml-2">--</span>
+                <button @click="loadUserCredits()" class="ml-2 text-blue-500 hover:text-blue-700">
+                    <i class="fas fa-refresh"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="flex justify-center mb-8">
+            <div class="bg-white rounded-lg shadow-md p-1 flex space-x-1">
+                <button @click="currentTab = 'keywords'" 
+                        :class="currentTab === 'keywords' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
+                        class="px-4 py-2 rounded-md transition-colors">
+                    <i class="fas fa-search mr-2"></i>Mots-clés
+                </button>
+                <button @click="currentTab = 'domains'" 
+                        :class="currentTab === 'domains' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
+                        class="px-4 py-2 rounded-md transition-colors">
+                    <i class="fas fa-globe mr-2"></i>Domaines
+                </button>
+                <button @click="currentTab = 'advanced'" 
+                        :class="currentTab === 'advanced' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
+                        class="px-4 py-2 rounded-md transition-colors">
+                    <i class="fas fa-rocket mr-2"></i>Avancé
+                </button>
+                <button @click="currentTab = 'health'" 
+                        :class="currentTab === 'health' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
+                        class="px-4 py-2 rounded-md transition-colors">
+                    <i class="fas fa-heart mr-2"></i>Santé
+                </button>
+                <!-- 🤖 NOUVEAU : Lien vers Chat MCP -->
+                <a href="/chat" 
+                   class="px-4 py-2 rounded-md transition-colors bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600">
+                    <i class="fas fa-robot mr-2"></i>Chat IA
+                </a>
+            </div>
+        </nav>
+
+        <!-- Contenu principal -->
+        <main class="max-w-4xl mx-auto">
+            
+            <!-- Section Mots-clés -->
+            <div x-show="currentTab === 'keywords'" class="space-y-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-search text-blue-500 mr-2"></i>Analyse de mots-clés
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mot-clé</label>
+                            <input x-model="keywordInput" type="text" placeholder="Ex: SEO, marketing digital..."
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
+                            <select x-model="language" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="fr">Français</option>
+                                <option value="en">Anglais</option>
+                                <option value="es">Espagnol</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2 mb-4">
+                        <button @click="analyzeKeyword('overview')" :disabled="loading"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-chart-line mr-2"></i>Vue d'ensemble
+                        </button>
+                        <button @click="analyzeKeyword('similar')" :disabled="loading"
+                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-lightbulb mr-2"></i>Similaires
+                        </button>
+                        <button @click="analyzeKeyword('questions')" :disabled="loading"
+                                class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-question mr-2"></i>Questions
+                        </button>
+                    </div>
+                    
+                    <!-- Résultats -->
+                    <div x-show="keywordResults" class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Résultats</h3>
+                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <pre x-text="keywordResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Domaines -->
+            <div x-show="currentTab === 'domains'" class="space-y-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-globe text-blue-500 mr-2"></i>Analyse de domaines
+                    </h2>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Domaine</label>
+                        <input x-model="domainInput" type="text" placeholder="Ex: example.com"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div class="flex space-x-2 mb-4">
+                        <button @click="analyzeDomain('overview')" :disabled="loading"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-chart-bar mr-2"></i>Vue d'ensemble
+                        </button>
+                        <button @click="analyzeDomain('competitors')" :disabled="loading"
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-users mr-2"></i>Concurrents
+                        </button>
+                        <button @click="analyzeDomain('top-pages')" :disabled="loading"
+                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-star mr-2"></i>Top Pages
+                        </button>
+                    </div>
+                    
+                    <!-- Résultats -->
+                    <div x-show="domainResults" class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Résultats</h3>
+                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <pre x-text="domainResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Recherche Avancée -->
+            <div x-show="currentTab === 'advanced'" class="space-y-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-rocket text-purple-500 mr-2"></i>Recherche SEO Avancée
+                    </h2>
+                    
+                    <!-- Recherche par position -->
+                    <div class="mb-8 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                            🎯 Recherche par position
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Trouvez tous les mots-clés d'un domaine dans une plage de positions spécifique
+                        </p>
+                        
+                        <div class="grid md:grid-cols-4 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Domaine</label>
+                                <input x-model="advancedDomain" type="text" placeholder="example.com"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Position min</label>
+                                <input x-model="positionMin" type="number" min="1" max="100" value="5"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Position max</label>
+                                <input x-model="positionMax" type="number" min="1" max="100" value="10"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
+                                <select x-model="advancedLanguage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                    <option value="fr">Français</option>
+                                    <option value="en">Anglais</option>
+                                    <option value="es">Espagnol</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button @click="searchByPosition()" :disabled="loading"
+                                class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-search mr-2"></i>Rechercher par position
+                        </button>
+                    </div>
+                    
+                    <!-- Vérification en masse -->
+                    <div class="mb-8 p-4 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                            📊 Vérification en masse
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Vérifiez les positions d'une liste de mots-clés pour un domaine
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Domaine</label>
+                                <input x-model="bulkDomain" type="text" placeholder="example.com"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
+                                <select x-model="bulkLanguage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="fr">Français</option>
+                                    <option value="en">Anglais</option>
+                                    <option value="es">Espagnol</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mots-clés (un par ligne)</label>
+                            <textarea x-model="bulkKeywords" rows="4" 
+                                      placeholder="SEO\nmarketing digital\nréférencement\n..."
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+                        </div>
+                        
+                        <button @click="bulkPositionCheck()" :disabled="loading"
+                                class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md disabled:opacity-50">
+                            <i class="fas fa-list-check mr-2"></i>Vérifier les positions
+                        </button>
+                    </div>
+                    
+                    <!-- Résultats avancés -->
+                    <div x-show="advancedResults" class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Résultats de la recherche avancée</h3>
+                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                            <pre x-text="advancedResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Santé -->
+            <div x-show="currentTab === 'health'" class="space-y-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-heart text-red-500 mr-2"></i>Santé du serveur
+                    </h2>
+                    
+                    <button @click="checkHealth()" :disabled="loading"
+                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md disabled:opacity-50 mb-4">
+                        <i class="fas fa-stethoscope mr-2"></i>Vérifier la santé
+                    </button>
+                    
+                    <!-- Résultats -->
+                    <div x-show="healthResults" class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">État du serveur</h3>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <pre x-text="healthResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div x-show="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-lg p-6 text-center">
+                    <i class="fas fa-spinner fa-spin text-3xl text-blue-500 mb-3"></i>
+                    <p class="text-gray-700">Chargement en cours...</p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>🚀 Serveur MCP Haloscan - Powered by FastAPI & FastMCP</p>
+        </footer>
+    </div>
+
+    <script>
+        function haloscanApp() {
+            return {
+                currentTab: 'keywords',
+                loading: false,
+                keywordInput: '',
+                domainInput: '',
+                language: 'fr',
+                keywordResults: '',
+                domainResults: '',
+                healthResults: '',
+                advancedResults: '',
+                userCredits: '--',
+                // Variables pour recherche avancée
+                advancedDomain: '',
+                positionMin: 5,
+                positionMax: 10,
+                advancedLanguage: 'fr',
+                bulkDomain: '',
+                bulkKeywords: '',
+                bulkLanguage: 'fr',
+
+                async init() {
+                    await this.loadUserCredits();
+                },
+
+                async loadUserCredits() {
+                    try {
+                        const response = await fetch('/user/credit');
+                        const data = await response.json();
+                        this.userCredits = data.credits || 'N/A';
+                    } catch (error) {
+                        console.error('Erreur lors du chargement des crédits:', error);
+                        this.userCredits = 'Erreur';
+                    }
+                },
+
+                async analyzeKeyword(type) {
+                    if (!this.keywordInput.trim()) {
+                        alert('Veuillez saisir un mot-clé');
+                        return;
+                    }
+
+                    this.loading = true;
+                    this.keywordResults = '';
+
+                    try {
+                        let endpoint = '';
+                        let body = {
+                            keyword: this.keywordInput.trim(),
+                            lang: this.language
+                        };
+
+                        switch(type) {
+                            case 'overview':
+                                endpoint = '/keywords/overview';
+                                break;
+                            case 'similar':
+                                endpoint = '/keywords/similar';
+                                break;
+                            case 'questions':
+                                endpoint = '/keywords/questions';
+                                break;
+                        }
+
+                        const response = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(body)
+                        });
+
+                        const data = await response.json();
+                        this.keywordResults = JSON.stringify(data, null, 2);
+                    } catch (error) {
+                        this.keywordResults = 'Erreur: ' + error.message;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                async analyzeDomain(type) {
+                    if (!this.domainInput.trim()) {
+                        alert('Veuillez saisir un domaine');
+                        return;
+                    }
+
+                    this.loading = true;
+                    this.domainResults = '';
+
+                    try {
+                        let endpoint = '';
+                        let body = {
+                            domain: this.domainInput.trim()
+                        };
+
+                        switch(type) {
+                            case 'overview':
+                                endpoint = '/domains/overview';
+                                break;
+                            case 'competitors':
+                                endpoint = '/domains/competitors';
+                                break;
+                            case 'top-pages':
+                                endpoint = '/domains/top-pages';
+                                break;
+                        }
+
+                        const response = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(body)
+                        });
+
+                        const data = await response.json();
+                        this.domainResults = JSON.stringify(data, null, 2);
+                    } catch (error) {
+                        this.domainResults = 'Erreur: ' + error.message;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                async checkHealth() {
+                    this.loading = true;
+                    this.healthResults = '';
+
+                    try {
+                        const response = await fetch('/health/');
+                        const data = await response.json();
+                        this.healthResults = JSON.stringify(data, null, 2);
+                    } catch (error) {
+                        this.healthResults = 'Erreur: ' + error.message;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                async searchByPosition() {
+                    if (!this.advancedDomain.trim()) {
+                        alert('Veuillez saisir un domaine');
+                        return;
+                    }
+
+                    if (this.positionMin > this.positionMax) {
+                        alert('La position minimum doit être inférieure à la position maximum');
+                        return;
+                    }
+
+                    this.loading = true;
+                    this.advancedResults = '';
+
+                    try {
+                        const response = await fetch('/advanced/search/keywords-by-position', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                domain: this.advancedDomain.trim(),
+                                position_min: parseInt(this.positionMin),
+                                position_max: parseInt(this.positionMax),
+                                lang: this.advancedLanguage
+                            })
+                        });
+
+                        const data = await response.json();
+                        this.advancedResults = `🎯 RECHERCHE PAR POSITION\n\nDomaine: ${data.domain}\nPlage de positions: ${data.position_range}\nNombre de mots-clés trouvés: ${data.total_keywords}\n\n` + JSON.stringify(data, null, 2);
+                    } catch (error) {
+                        this.advancedResults = 'Erreur: ' + error.message;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                async bulkPositionCheck() {
+                    if (!this.bulkDomain.trim()) {
+                        alert('Veuillez saisir un domaine');
+                        return;
+                    }
+
+                    if (!this.bulkKeywords.trim()) {
+                        alert('Veuillez saisir au moins un mot-clé');
+                        return;
+                    }
+
+                    this.loading = true;
+                    this.advancedResults = '';
+
+                    try {
+                        // Conversion des mots-clés en tableau
+                        const keywords = this.bulkKeywords.trim().split('\n').filter(k => k.trim());
+                        
+                        if (keywords.length > 100) {
+                            alert('Maximum 100 mots-clés par requête');
+                            return;
+                        }
+
+                        const response = await fetch('/advanced/search/bulk-position-check', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                keywords: keywords,
+                                domain: this.bulkDomain.trim(),
+                                lang: this.bulkLanguage
+                            })
+                        });
+
+                        const data = await response.json();
+                        this.advancedResults = `📊 VÉRIFICATION EN MASSE\n\nDomaine: ${data.domain}\nMots-clés analysés: ${data.total_keywords}\nTrouvés: ${data.found_keywords}\nNon trouvés: ${data.not_found}\nPosition moyenne: ${data.average_position || 'N/A'}\n\n` + JSON.stringify(data, null, 2);
+                    } catch (error) {
+                        this.advancedResults = 'Erreur: ' + error.message;
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

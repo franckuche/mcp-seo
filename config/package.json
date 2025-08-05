@@ -1,0 +1,33 @@
+{
+  "name": "mcp-haloscan-server",
+  "version": "1.0.0",
+  "description": "Serveur MCP pour l'API Haloscan SEO",
+  "main": "main.py",
+  "scripts": {
+    "start": "python main.py mcp",
+    "web": "python main.py web",
+    "setup": "./scripts/setup_env.sh",
+    "setup-win": "scripts\\setup_env.bat",
+    "test": "python test_mcp.py"
+  },
+  "keywords": ["mcp", "seo", "haloscan", "claude", "ai"],
+  "author": "Votre Nom",
+  "license": "MIT",
+  "mcp": {
+    "name": "haloscan-seo",
+    "version": "1.0.0",
+    "description": "Serveur MCP exposant tous les outils d'analyse SEO de l'API Haloscan",
+    "tools": [
+      "get_user_credit",
+      "get_keywords_overview", 
+      "get_keywords_match",
+      "get_keywords_similar",
+      "get_keywords_questions",
+      "get_keywords_synonyms",
+      "get_keywords_bulk",
+      "get_domains_overview",
+      "get_domains_competitors",
+      "get_domains_top_pages"
+    ]
+  }
+}

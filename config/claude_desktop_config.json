@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "haloscan": {
+      "command": "python",
+      "args": ["main.py", "mcp"],
+      "env": { 
+        "HALOSCAN_API_KEY": "VOTRE_CLE_API_HALOSCAN"
+      }
+    }
+  }
+}

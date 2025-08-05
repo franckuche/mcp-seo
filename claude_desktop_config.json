@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "haloscan-seo": {
+      "command": "python",
+      "args": ["/Users/franckmairot/grgrgrgr/main.py", "mcp"],
+      "env": {
+        "HALOSCAN_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjozMTE5LCJkYXRlIjoxNzA5NjQ1OTE0ODg0LCJpYXQiOjE3MDk2NDU5MTQsImV4cCI6MTc0MTIwMzUxNH0.Ky6lFaIs9aG0e_TDUMtKa94JFiKVhwpmEIg2F9tiRTw"
+      }
+    }
+  }
+}

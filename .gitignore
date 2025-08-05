@@ -1,0 +1,60 @@
+# === ENVIRONNEMENT VIRTUEL ===
+venv/
+env/
+.venv/
+.env/
+
+# === FICHIERS DE CONFIGURATION ===
+.env
+*.local
+.env.local
+.env.production
+
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === LOGS ===
+*.log
+logs/
+
+# === SYSTÈME ===
+.DS_Store
+Thumbs.db
+
+# === TESTS ===
+.pytest_cache/
+.coverage
+htmlcov/
+
+# === TEMPORAIRE ===
+*.tmp
+*.bak
+.cache/
