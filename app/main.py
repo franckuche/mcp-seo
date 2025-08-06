@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastmcp import FastMCP
 from .config import Config
 from .logging_config import setup_logging, get_logger
-from .routers import health, keywords, domains, user, frontend, advanced
+from .routers import health, frontend
 
 # Initialisation du logging
 setup_logging()
@@ -62,16 +62,11 @@ app = FastAPI(
 )
 
 # Inclusion des routers modulaires
-app.include_router(frontend.router, tags=["frontend"])  # Interface graphique sur /
+app.include_router(frontend.router, tags=["frontend"])  # Interface chat MCP chunked sur /
 app.include_router(health.router, prefix="/health", tags=["health"])
-app.include_router(user.router, prefix="/user", tags=["user"])
-app.include_router(keywords.router, prefix="/keywords", tags=["keywords"])
-app.include_router(domains.router, prefix="/domains", tags=["domains"])
-app.include_router(advanced.router, prefix="/advanced", tags=["advanced"])
 
-# 🤖 NOUVEAU : Router Chat MCP avec OpenAI + Haloscan
-from .routers import chat, chat_chunked
-app.include_router(chat.router, prefix="/api", tags=["chat-mcp"])
+# 🤖 Router Chat MCP avec chunking intelligent
+from .routers import chat_chunked
 app.include_router(chat_chunked.router, prefix="/api", tags=["chat-chunked"])
 
 # Génération automatique du serveur MCP depuis FastAPI

@@ -3,504 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Haloscan SEO Tools - Interface MCP</title>
+    <title>Chat MCP avec Chunking Intelligent - Haloscan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-    <div x-data="haloscanApp()" class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">
-                🚀 <span class="text-blue-600">Haloscan</span> SEO Tools
-            </h1>
-            <p class="text-gray-600">Interface graphique pour votre serveur MCP</p>
-            
-            <!-- Crédits utilisateur -->
-            <div class="mt-4 inline-block bg-white rounded-lg shadow-md px-4 py-2">
-                <span class="text-sm text-gray-600">Crédits disponibles:</span>
-                <span x-text="userCredits" class="font-bold text-green-600 ml-2">--</span>
-                <button @click="loadUserCredits()" class="ml-2 text-blue-500 hover:text-blue-700">
-                    <i class="fas fa-refresh"></i>
-                </button>
+<body class="bg-gray-50 h-screen overflow-hidden">
+    <div class="h-full flex flex-col" x-data="chatApp()">
+        <!-- Header Compact -->
+        <div class="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900">🧠 Chat MCP Chunked</h1>
+                    <p class="text-sm text-gray-600">Analyses SEO complètes sans limite de tokens</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-xs text-gray-500">Mode:</span>
+                    <span class="text-sm font-semibold text-blue-600">🧠 Chunking Intelligent</span>
+                </div>
             </div>
-        </header>
+        </div>
 
-        <!-- Navigation -->
-        <nav class="flex justify-center mb-8">
-            <div class="bg-white rounded-lg shadow-md p-1 flex space-x-1">
-                <button @click="currentTab = 'keywords'" 
-                        :class="currentTab === 'keywords' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
-                        class="px-4 py-2 rounded-md transition-colors">
-                    <i class="fas fa-search mr-2"></i>Mots-clés
-                </button>
-                <button @click="currentTab = 'domains'" 
-                        :class="currentTab === 'domains' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
-                        class="px-4 py-2 rounded-md transition-colors">
-                    <i class="fas fa-globe mr-2"></i>Domaines
-                </button>
-                <button @click="currentTab = 'advanced'" 
-                        :class="currentTab === 'advanced' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
-                        class="px-4 py-2 rounded-md transition-colors">
-                    <i class="fas fa-rocket mr-2"></i>Avancé
-                </button>
-                <button @click="currentTab = 'health'" 
-                        :class="currentTab === 'health' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'"
-                        class="px-4 py-2 rounded-md transition-colors">
-                    <i class="fas fa-heart mr-2"></i>Santé
-                </button>
-                <!-- 🤖 NOUVEAU : Lien vers Chat MCP -->
-                <a href="/chat" 
-                   class="px-4 py-2 rounded-md transition-colors bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600">
-                    <i class="fas fa-robot mr-2"></i>Chat IA
-                </a>
-            </div>
-        </nav>
-
-        <!-- Contenu principal -->
-        <main class="max-w-4xl mx-auto">
-            
-            <!-- Section Mots-clés -->
-            <div x-show="currentTab === 'keywords'" class="space-y-6">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-search text-blue-500 mr-2"></i>Analyse de mots-clés
-                    </h2>
-                    
-                    <div class="grid md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Mot-clé</label>
-                            <input x-model="keywordInput" type="text" placeholder="Ex: SEO, marketing digital..."
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
-                            <select x-model="language" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="fr">Français</option>
-                                <option value="en">Anglais</option>
-                                <option value="es">Espagnol</option>
-                            </select>
+        <!-- Chat Area Plein Écran -->
+        <div class="flex-1 bg-white flex flex-col min-h-0">
+            <!-- Messages -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-4" id="messages">
+                <!-- Message d'accueil -->
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        🤖
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <p class="text-gray-800">
+                                Bonjour ! 👋 Je suis votre assistant SEO IA avec <strong>chunking intelligent</strong>.
+                            </p>
+                            <div class="mt-3 text-sm text-gray-600">
+                                <p><strong>Mode Chunking Intelligent :</strong> Pour des analyses complètes, utilisez des phrases comme :</p>
+                                <ul class="mt-2 space-y-1">
+                                    <li>• "Analyse complète de ads-up.fr et tous ses concurrents"</li>
+                                    <li>• "Rapport détaillé sur lemonde.fr avec analyse exhaustive"</li>
+                                    <li>• "Audit complet de mon-site.com avec tous les mots-clés"</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="flex space-x-2 mb-4">
-                        <button @click="analyzeKeyword('overview')" :disabled="loading"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-chart-line mr-2"></i>Vue d'ensemble
-                        </button>
-                        <button @click="analyzeKeyword('similar')" :disabled="loading"
-                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-lightbulb mr-2"></i>Similaires
-                        </button>
-                        <button @click="analyzeKeyword('questions')" :disabled="loading"
-                                class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-question mr-2"></i>Questions
-                        </button>
+                </div>
+
+                <!-- Messages dynamiques -->
+                <template x-for="message in messages" :key="message.id">
+                    <div class="flex items-start space-x-3" :class="message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                             :class="message.role === 'user' ? 'bg-green-500' : 'bg-blue-500'">
+                            <span x-text="message.role === 'user' ? '👤' : '🤖'"></span>
+                        </div>
+                        <div class="flex-1 max-w-4xl">
+                            <div class="rounded-lg p-4" 
+                                 :class="message.role === 'user' ? 'bg-green-50' : 'bg-blue-50'">
+                                <div x-html="formatMessage(message.content)"></div>
+                                
+                                <!-- Outils utilisés -->
+                                <div x-show="message.tools_used && message.tools_used.length > 0" class="mt-3 pt-3 border-t border-gray-200">
+                                    <p class="text-xs text-gray-500 mb-2">🔧 Outils utilisés :</p>
+                                    <div class="flex flex-wrap gap-1">
+                                        <template x-for="tool in message.tools_used">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                                                  :class="tool.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                                <span x-text="tool.success ? '✅' : '❌'"></span>
+                                                <span x-text="tool.tool" class="ml-1"></span>
+                                                <span x-show="tool.chunks_processed" x-text="'(' + tool.chunks_processed + ' chunks)'" class="ml-1 text-blue-600 font-bold"></span>
+                                            </span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <!-- Résultats -->
-                    <div x-show="keywordResults" class="mt-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Résultats</h3>
-                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                            <pre x-text="keywordResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                </template>
+
+                <!-- Loading indicator -->
+                <div x-show="isLoading" class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        🤖
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                                <span x-text="loadingMessage" class="text-gray-700"></span>
+                            </div>
+                            
+                            <!-- Progression du chunking intelligent -->
+                            <div x-show="showChunkingProgress" class="mt-4">
+                                <div class="flex justify-between items-center mb-3">
+                                    <p class="text-xs text-gray-500">🧠 Étapes du chunking intelligent :</p>
+                                    <div class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                                        <span x-text="`⏱️ ${elapsedTime}s / ~${totalEstimatedTime}s`"></span>
+                                        <span x-show="remainingTime > 0" class="ml-2 text-blue-600">
+                                            (encore ~<span x-text="remainingTime"></span>s)
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Barre de progression globale -->
+                                <div class="mb-3">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-500 h-2 rounded-full transition-all duration-1000" 
+                                             :style="`width: ${Math.min(100, (elapsedTime / totalEstimatedTime) * 100)}%`"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-2">
+                                    <template x-for="(step, index) in chunkingSteps" :key="index">
+                                        <div class="flex items-center space-x-2 text-sm">
+                                            <div class="w-4 h-4 rounded-full flex items-center justify-center text-xs"
+                                                 :class="{
+                                                     'bg-gray-200 text-gray-500': step.status === 'pending',
+                                                     'bg-blue-500 text-white animate-pulse': step.status === 'active',
+                                                     'bg-green-500 text-white': step.status === 'completed'
+                                                 }">
+                                                <span x-show="step.status === 'pending'">•</span>
+                                                <span x-show="step.status === 'active'">⏳</span>
+                                                <span x-show="step.status === 'completed'">✓</span>
+                                            </div>
+                                            <span x-text="step.name" 
+                                                  :class="{
+                                                      'text-gray-500': step.status === 'pending',
+                                                      'text-blue-600 font-medium': step.status === 'active',
+                                                      'text-green-600': step.status === 'completed'
+                                                  }"></span>
+                                            <span x-show="step.status === 'active'" class="text-xs text-blue-500 ml-auto">
+                                                (~<span x-text="step.duration"></span>s)
+                                            </span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Section Domaines -->
-            <div x-show="currentTab === 'domains'" class="space-y-6">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-globe text-blue-500 mr-2"></i>Analyse de domaines
-                    </h2>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Domaine</label>
-                        <input x-model="domainInput" type="text" placeholder="Ex: example.com"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-                    
-                    <div class="flex space-x-2 mb-4">
-                        <button @click="analyzeDomain('overview')" :disabled="loading"
-                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-chart-bar mr-2"></i>Vue d'ensemble
+            <!-- Input Area Fixe en Bas -->
+            <div class="border-t border-gray-200 p-4 flex-shrink-0 bg-gray-50">
+                <!-- Quick Examples -->
+                <div class="mb-3">
+                    <p class="text-xs text-gray-500 mb-2">Exemples rapides :</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button @click="setMessage('ANALYSE SEO CHUNKED: https://ads-up.fr/\nMISSION: Identifier les mots-clés où ads-up.fr NE SE POSITIONNE PAS mais où la plupart de ses concurrents sont bien positionnés (pages 1-3).')" 
+                                class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs hover:bg-blue-200 transition-colors">
+                            🧠 Gaps SEO ads-up.fr
                         </button>
-                        <button @click="analyzeDomain('competitors')" :disabled="loading"
-                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-users mr-2"></i>Concurrents
+                        <button @click="setMessage('ANALYSE SEO CHUNKED: https://lemonde.fr/\nMISSION: Rapport détaillé avec analyse exhaustive des mots-clés et concurrents.')" 
+                                class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs hover:bg-purple-200 transition-colors">
+                            📊 Analyse lemonde.fr
                         </button>
-                        <button @click="analyzeDomain('top-pages')" :disabled="loading"
-                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-star mr-2"></i>Top Pages
+                        <button @click="setMessage('Quels sont mes crédits Haloscan ?')" 
+                                class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs hover:bg-green-200 transition-colors">
+                            💳 Crédits Haloscan
                         </button>
-                    </div>
-                    
-                    <!-- Résultats -->
-                    <div x-show="domainResults" class="mt-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Résultats</h3>
-                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                            <pre x-text="domainResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
-                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Section Recherche Avancée -->
-            <div x-show="currentTab === 'advanced'" class="space-y-6">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-rocket text-purple-500 mr-2"></i>Recherche SEO Avancée
-                    </h2>
-                    
-                    <!-- Recherche par position -->
-                    <div class="mb-8 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                            🎯 Recherche par position
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-4">
-                            Trouvez tous les mots-clés d'un domaine dans une plage de positions spécifique
-                        </p>
-                        
-                        <div class="grid md:grid-cols-4 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Domaine</label>
-                                <input x-model="advancedDomain" type="text" placeholder="example.com"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Position min</label>
-                                <input x-model="positionMin" type="number" min="1" max="100" value="5"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Position max</label>
-                                <input x-model="positionMax" type="number" min="1" max="100" value="10"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
-                                <select x-model="advancedLanguage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="fr">Français</option>
-                                    <option value="en">Anglais</option>
-                                    <option value="es">Espagnol</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <button @click="searchByPosition()" :disabled="loading"
-                                class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-search mr-2"></i>Rechercher par position
-                        </button>
-                    </div>
-                    
-                    <!-- Vérification en masse -->
-                    <div class="mb-8 p-4 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                            📊 Vérification en masse
-                        </h3>
-                        <p class="text-sm text-gray-600 mb-4">
-                            Vérifiez les positions d'une liste de mots-clés pour un domaine
-                        </p>
-                        
-                        <div class="grid md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Domaine</label>
-                                <input x-model="bulkDomain" type="text" placeholder="example.com"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
-                                <select x-model="bulkLanguage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                                    <option value="fr">Français</option>
-                                    <option value="en">Anglais</option>
-                                    <option value="es">Espagnol</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Mots-clés (un par ligne)</label>
-                            <textarea x-model="bulkKeywords" rows="4" 
-                                      placeholder="SEO\nmarketing digital\nréférencement\n..."
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
-                        </div>
-                        
-                        <button @click="bulkPositionCheck()" :disabled="loading"
-                                class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md disabled:opacity-50">
-                            <i class="fas fa-list-check mr-2"></i>Vérifier les positions
-                        </button>
-                    </div>
-                    
-                    <!-- Résultats avancés -->
-                    <div x-show="advancedResults" class="mt-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Résultats de la recherche avancée</h3>
-                        <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                            <pre x-text="advancedResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
+                <!-- Input Form -->
+                <form @submit.prevent="sendMessage" class="space-y-3">
+                    <div class="flex flex-col space-y-2">
+                        <textarea x-model="currentMessage" 
+                                  placeholder="Tapez votre prompt SEO détaillé...&#10;&#10;Exemple:&#10;ANALYSE SEO CHUNKED: https://ads-up.fr/&#10;MISSION: Identifier les mots-clés où ads-up.fr NE SE POSITIONNE PAS mais où la plupart de ses concurrents sont bien positionnés..."
+                                  class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none transition-all duration-200"
+                                  :disabled="isLoading"
+                                  rows="4"
+                                  x-ref="messageTextarea"
+                                  @input="autoResize()"
+                                  @keydown.ctrl.enter="sendMessage()"
+                                  style="min-height: 100px; max-height: 300px;"></textarea>
+                        <div class="flex justify-between items-center text-xs text-gray-500">
+                            <span>Ctrl+Entrée pour envoyer | Le textarea s'agrandit automatiquement</span>
+                            <span x-text="`${currentMessage.length} caractères`"></span>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Section Santé -->
-            <div x-show="currentTab === 'health'" class="space-y-6">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                        <i class="fas fa-heart text-red-500 mr-2"></i>Santé du serveur
-                    </h2>
-                    
-                    <button @click="checkHealth()" :disabled="loading"
-                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md disabled:opacity-50 mb-4">
-                        <i class="fas fa-stethoscope mr-2"></i>Vérifier la santé
+                    <button type="submit" 
+                            :disabled="isLoading || !currentMessage.trim()"
+                            class="w-full bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors">
+                        <span x-show="!isLoading">🚀 Lancer l'analyse SEO chunked</span>
+                        <span x-show="isLoading">🧠 Analyse en cours...</span>
                     </button>
-                    
-                    <!-- Résultats -->
-                    <div x-show="healthResults" class="mt-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">État du serveur</h3>
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <pre x-text="healthResults" class="text-sm text-gray-700 whitespace-pre-wrap"></pre>
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
-
-            <!-- Loading indicator -->
-            <div x-show="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div class="bg-white rounded-lg p-6 text-center">
-                    <i class="fas fa-spinner fa-spin text-3xl text-blue-500 mb-3"></i>
-                    <p class="text-gray-700">Chargement en cours...</p>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Footer -->
-        <footer class="text-center mt-12 text-gray-500 text-sm">
-            <p>🚀 Serveur MCP Haloscan - Powered by FastAPI & FastMCP</p>
-        </footer>
+        </div>
     </div>
 
     <script>
-        function haloscanApp() {
+        function chatApp() {
             return {
-                currentTab: 'keywords',
-                loading: false,
-                keywordInput: '',
-                domainInput: '',
-                language: 'fr',
-                keywordResults: '',
-                domainResults: '',
-                healthResults: '',
-                advancedResults: '',
-                userCredits: '--',
-                // Variables pour recherche avancée
-                advancedDomain: '',
-                positionMin: 5,
-                positionMax: 10,
-                advancedLanguage: 'fr',
-                bulkDomain: '',
-                bulkKeywords: '',
-                bulkLanguage: 'fr',
-
-                async init() {
-                    await this.loadUserCredits();
+                messages: [],
+                currentMessage: '',
+                isLoading: false,
+                loadingMessage: 'Analyse en cours...',
+                mode: 'chunked', // Par défaut en mode chunked
+                showChunkingProgress: false,
+                chunkingSteps: [],
+                currentStep: 0,
+                
+                setMessage(message) {
+                    this.currentMessage = message;
+                    // Auto-resize le textarea après avoir défini le message
+                    this.$nextTick(() => this.autoResize());
                 },
-
-                async loadUserCredits() {
-                    try {
-                        const response = await fetch('/user/credit');
-                        const data = await response.json();
-                        this.userCredits = data.credits || 'N/A';
-                    } catch (error) {
-                        console.error('Erreur lors du chargement des crédits:', error);
-                        this.userCredits = 'Erreur';
-                    }
-                },
-
-                async analyzeKeyword(type) {
-                    if (!this.keywordInput.trim()) {
-                        alert('Veuillez saisir un mot-clé');
-                        return;
-                    }
-
-                    this.loading = true;
-                    this.keywordResults = '';
-
-                    try {
-                        let endpoint = '';
-                        let body = {
-                            keyword: this.keywordInput.trim(),
-                            lang: this.language
-                        };
-
-                        switch(type) {
-                            case 'overview':
-                                endpoint = '/keywords/overview';
-                                break;
-                            case 'similar':
-                                endpoint = '/keywords/similar';
-                                break;
-                            case 'questions':
-                                endpoint = '/keywords/questions';
-                                break;
-                        }
-
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(body)
-                        });
-
-                        const data = await response.json();
-                        this.keywordResults = JSON.stringify(data, null, 2);
-                    } catch (error) {
-                        this.keywordResults = 'Erreur: ' + error.message;
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-
-                async analyzeDomain(type) {
-                    if (!this.domainInput.trim()) {
-                        alert('Veuillez saisir un domaine');
-                        return;
-                    }
-
-                    this.loading = true;
-                    this.domainResults = '';
-
-                    try {
-                        let endpoint = '';
-                        let body = {
-                            domain: this.domainInput.trim()
-                        };
-
-                        switch(type) {
-                            case 'overview':
-                                endpoint = '/domains/overview';
-                                break;
-                            case 'competitors':
-                                endpoint = '/domains/competitors';
-                                break;
-                            case 'top-pages':
-                                endpoint = '/domains/top-pages';
-                                break;
-                        }
-
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(body)
-                        });
-
-                        const data = await response.json();
-                        this.domainResults = JSON.stringify(data, null, 2);
-                    } catch (error) {
-                        this.domainResults = 'Erreur: ' + error.message;
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-
-                async checkHealth() {
-                    this.loading = true;
-                    this.healthResults = '';
-
-                    try {
-                        const response = await fetch('/health/');
-                        const data = await response.json();
-                        this.healthResults = JSON.stringify(data, null, 2);
-                    } catch (error) {
-                        this.healthResults = 'Erreur: ' + error.message;
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-
-                async searchByPosition() {
-                    if (!this.advancedDomain.trim()) {
-                        alert('Veuillez saisir un domaine');
-                        return;
-                    }
-
-                    if (this.positionMin > this.positionMax) {
-                        alert('La position minimum doit être inférieure à la position maximum');
-                        return;
-                    }
-
-                    this.loading = true;
-                    this.advancedResults = '';
-
-                    try {
-                        const response = await fetch('/advanced/search/keywords-by-position', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                domain: this.advancedDomain.trim(),
-                                position_min: parseInt(this.positionMin),
-                                position_max: parseInt(this.positionMax),
-                                lang: this.advancedLanguage
-                            })
-                        });
-
-                        const data = await response.json();
-                        this.advancedResults = `🎯 RECHERCHE PAR POSITION\n\nDomaine: ${data.domain}\nPlage de positions: ${data.position_range}\nNombre de mots-clés trouvés: ${data.total_keywords}\n\n` + JSON.stringify(data, null, 2);
-                    } catch (error) {
-                        this.advancedResults = 'Erreur: ' + error.message;
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-
-                async bulkPositionCheck() {
-                    if (!this.bulkDomain.trim()) {
-                        alert('Veuillez saisir un domaine');
-                        return;
-                    }
-
-                    if (!this.bulkKeywords.trim()) {
-                        alert('Veuillez saisir au moins un mot-clé');
-                        return;
-                    }
-
-                    this.loading = true;
-                    this.advancedResults = '';
-
-                    try {
-                        // Conversion des mots-clés en tableau
-                        const keywords = this.bulkKeywords.trim().split('\n').filter(k => k.trim());
+                
+                autoResize() {
+                    // Fonction pour redimensionner automatiquement le textarea
+                    const textarea = this.$refs.messageTextarea;
+                    if (textarea) {
+                        // Reset la hauteur pour calculer la nouvelle hauteur
+                        textarea.style.height = 'auto';
                         
-                        if (keywords.length > 100) {
-                            alert('Maximum 100 mots-clés par requête');
-                            return;
-                        }
-
-                        const response = await fetch('/advanced/search/bulk-position-check', {
+                        // Calculer la nouvelle hauteur basée sur le contenu
+                        const newHeight = Math.min(Math.max(textarea.scrollHeight, 100), 300);
+                        textarea.style.height = newHeight + 'px';
+                    }
+                },
+                
+                async sendMessage() {
+                    if (!this.currentMessage.trim() || this.isLoading) return;
+                    
+                    const userMessage = this.currentMessage.trim();
+                    this.currentMessage = '';
+                    
+                    // Ajouter le message utilisateur
+                    this.messages.push({
+                        id: Date.now(),
+                        role: 'user',
+                        content: userMessage,
+                        tools_used: []
+                    });
+                    
+                    this.isLoading = true;
+                    
+                    // Déterminer le message de chargement selon le mode
+                    if (this.mode === 'chunked' && this.isComplexQuery(userMessage)) {
+                        this.loadingMessage = '🧠 Analyse chunked en cours...';
+                        this.showChunkingProgress = true;
+                        this.chunkingSteps = [
+                            { name: '📊 Analyse du domaine', status: 'pending', duration: 3 },
+                            { name: '🏢 Identification des concurrents', status: 'pending', duration: 4 },
+                            { name: '🔍 Analyse mots-clés page 2 (11-20)', status: 'pending', duration: 8 },
+                            { name: '📈 Analyse mots-clés page 1 (1-10)', status: 'pending', duration: 6 },
+                            { name: '📊 Analyse mots-clés page 3+ (21-50)', status: 'pending', duration: 10 },
+                            { name: '🧠 Synthèse finale (max 8000 tokens)', status: 'pending', duration: 15 }
+                        ];
+                        this.currentStep = 0;
+                        this.totalEstimatedTime = this.chunkingSteps.reduce((sum, step) => sum + step.duration, 0);
+                        this.startProgressSimulation();
+                    } else {
+                        this.loadingMessage = '🤖 Analyse en cours...';
+                        this.showChunkingProgress = false;
+                    }
+                    
+                    // Scroll vers le bas
+                    this.$nextTick(() => {
+                        const messagesDiv = document.getElementById('messages');
+                        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    });
+                    
+                    try {
+                        // FORCER l'endpoint chunked sur cette interface
+                        const endpoint = '/api/chat-chunked';
+                        
+                        // DEBUG: Afficher l'endpoint utilisé
+                        console.log('🎯 INTERFACE: chat-chunked | ENDPOINT FORCÉ:', endpoint);
+                        
+                        const response = await fetch(endpoint, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                keywords: keywords,
-                                domain: this.bulkDomain.trim(),
-                                lang: this.bulkLanguage
+                                message: userMessage,
+                                conversation_history: this.messages.slice(0, -1).map(msg => ({
+                                    role: msg.role,
+                                    content: msg.content
+                                }))
                             })
                         });
-
+                        
+                        if (!response.ok) {
+                            throw new Error(`Erreur HTTP: ${response.status}`);
+                        }
+                        
                         const data = await response.json();
-                        this.advancedResults = `📊 VÉRIFICATION EN MASSE\n\nDomaine: ${data.domain}\nMots-clés analysés: ${data.total_keywords}\nTrouvés: ${data.found_keywords}\nNon trouvés: ${data.not_found}\nPosition moyenne: ${data.average_position || 'N/A'}\n\n` + JSON.stringify(data, null, 2);
+                        
+                        // Ajouter la réponse de l'assistant
+                        this.messages.push({
+                            id: Date.now() + 1,
+                            role: 'assistant',
+                            content: data.response,
+                            tools_used: data.tools_used || []
+                        });
+                        
                     } catch (error) {
-                        this.advancedResults = 'Erreur: ' + error.message;
+                        console.error('Erreur lors de l\'envoi du message:', error);
+                        this.messages.push({
+                            id: Date.now() + 1,
+                            role: 'assistant',
+                            content: `❌ Désolé, une erreur s'est produite : ${error.message}`,
+                            tools_used: []
+                        });
                     } finally {
-                        this.loading = false;
+                        this.isLoading = false;
+                        
+                        // Scroll vers le bas
+                        this.$nextTick(() => {
+                            const messagesDiv = document.getElementById('messages');
+                            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                        });
                     }
+                },
+                
+                startProgressSimulation() {
+                    // Démarrer la simulation de progression avec timer réaliste
+                    this.progressStartTime = Date.now();
+                    this.elapsedTime = 0;
+                    this.remainingTime = this.totalEstimatedTime;
+                    
+                    // Mettre la première étape en actif
+                    if (this.chunkingSteps.length > 0) {
+                        this.chunkingSteps[0].status = 'active';
+                    }
+                    
+                    // Timer pour mettre à jour le temps écoulé/restant
+                    this.progressTimer = setInterval(() => {
+                        if (this.isLoading) {
+                            this.elapsedTime = Math.floor((Date.now() - this.progressStartTime) / 1000);
+                            this.remainingTime = Math.max(0, this.totalEstimatedTime - this.elapsedTime);
+                        } else {
+                            clearInterval(this.progressTimer);
+                        }
+                    }, 1000);
+                    
+                    // Simuler la progression des étapes
+                    this.simulateStepProgression();
+                },
+                
+                simulateStepProgression() {
+                    let cumulativeTime = 0;
+                    
+                    this.chunkingSteps.forEach((step, index) => {
+                        cumulativeTime += step.duration;
+                        
+                        setTimeout(() => {
+                            if (this.isLoading && this.currentStep === index) {
+                                // Compléter l'étape actuelle
+                                this.chunkingSteps[index].status = 'completed';
+                                this.currentStep++;
+                                
+                                // Activer la prochaine étape si elle existe
+                                if (this.currentStep < this.chunkingSteps.length) {
+                                    this.chunkingSteps[this.currentStep].status = 'active';
+                                } else {
+                                    // Toutes les étapes sont terminées
+                                    this.showChunkingProgress = false;
+                                    clearInterval(this.progressTimer);
+                                }
+                            }
+                        }, cumulativeTime * 1000);
+                    });
+                },
+                
+                isComplexQuery(message) {
+                    // TOUJOURS activer le chunking sur l'interface /chat-chunked
+                    return true;
+                    
+                    // Ancienne logique de détection (désactivée)
+                    /*
+                    const complexKeywords = [
+                        'analyse complète', 'analyse détaillée', 'tous les concurrents', 
+                        'analyse exhaustive', 'étude approfondie', 'rapport complet',
+                        'tous les mots-clés', 'analyse concurrentielle', 'audit complet',
+                        'chunked', 'seo chunked', 'analyse seo chunked'
+                    ];
+                    return complexKeywords.some(keyword => message.toLowerCase().includes(keyword));
+                    */
+                },
+                
+                formatMessage(content) {
+                    // Convertir les retours à la ligne en <br>
+                    return content.replace(/\n/g, '<br>');
                 }
             }
         }

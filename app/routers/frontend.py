@@ -15,27 +15,13 @@ templates = Jinja2Templates(directory=str(templates_dir))
 @router.get("/", response_class=HTMLResponse)
 async def get_frontend(request: Request):
     """
-    Interface graphique principale pour le serveur MCP Haloscan
+    Interface chat MCP avec chunking intelligent - Page principale
     """
     return templates.TemplateResponse("index.html", {"request": request})
 
-@router.get("/chat-chunked", response_class=HTMLResponse)
-async def get_chat_chunked(request: Request):
+@router.get("/health-ui", response_class=HTMLResponse)
+async def get_health_ui(request: Request):
     """
-    Interface chat MCP avec chunking intelligent
-    """
-    return templates.TemplateResponse("chat_chunked.html", {"request": request})
-
-@router.get("/ui", response_class=HTMLResponse)
-async def get_ui_alias(request: Request):
-    """
-    Alias pour l'interface graphique
+    Interface de monitoring (alias vers la page principale)
     """
     return templates.TemplateResponse("index.html", {"request": request})
-
-@router.get("/chat", response_class=HTMLResponse)
-async def get_chat_interface(request: Request):
-    """
-    🤖 Interface chat MCP avec OpenAI + Haloscan
-    """
-    return templates.TemplateResponse("chat.html", {"request": request})
